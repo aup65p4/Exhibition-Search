@@ -178,4 +178,3 @@ conn.commit()
 conn.close()
 
 print("資料更新完成！")
-12124477
