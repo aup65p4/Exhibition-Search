@@ -13,23 +13,23 @@ headers = {
 # 連接 MySQL 資料庫
 conn = mysql.connector.connect(
     host="localhost",        # MySQL 主機
-    user="root",             # MySQL 使用者名稱npm install express mysql2 cors
-
-    password="P@ssw0rd", # MySQL 密碼
-    database="exhibition_db"  # MySQL 資料庫名稱
+    user="root",             # MySQL 使用者名稱
+    password="P@ssw0rd",     # MySQL 密碼
+    database="exhibition_db" # MySQL 資料庫名稱
 )
 cursor = conn.cursor()
 
-# 確保表格包含類型欄位 (若無則新增)
-cursor.execute(''' 
-    CREATE TABLE IF NOT EXISTS huashan1914 (
+# 確保表格包含 location 欄位
+cursor.execute('''
+    CREATE TABLE IF NOT EXISTS exhibitions (
         id INT AUTO_INCREMENT PRIMARY KEY,
         name VARCHAR(255) UNIQUE,
         date VARCHAR(255),
         time VARCHAR(255),
         link TEXT,
         image TEXT,
-        category VARCHAR(255)
+        category VARCHAR(255),
+        location VARCHAR(255)
     )
 ''')
 
@@ -89,34 +89,37 @@ def scrape_page(url):
         category_tag = exhibition.find("div", class_="event-list-type")
         category_span = category_tag.find("span") if category_tag else None
         category = category_span.text.strip() if category_span else "未提供類型"
+
+        # 提取展覽地點
+        location = "華山"
     
         # 檢查資料是否已存在
-        cursor.execute("SELECT date, time, link, image, category FROM huashan1914 WHERE name = %s", (name,))
+        cursor.execute("SELECT date, time, link, image, category, location FROM exhibitions WHERE name = %s", (name,))
         existing_entry = cursor.fetchone()
     
         if existing_entry:
             # 解包現有資料
-            existing_date, existing_time, existing_link, existing_image, existing_category = existing_entry
+            existing_date, existing_time, existing_link, existing_image, existing_category, existing_location = existing_entry
     
             # 如果資料不同，則更新
             if (date != existing_date or time != existing_time or link != existing_link 
-                or image_url != existing_image or category != existing_category):
+                or image_url != existing_image or category != existing_category or location != existing_location):
     
                 cursor.execute(""" 
-                    UPDATE huashan1914 
-                    SET date=%s, time=%s, link=%s, image=%s, category=%s 
+                    UPDATE exhibitions 
+                    SET date=%s, time=%s, link=%s, image=%s, category=%s, location=%s
                     WHERE name=%s
-                """, (date, time, link, image_url, category, name))
-                print(f"已更新展覽: {name} - {category} - {date} - {time} - {link} - {image_url}")
+                """, (date, time, link, image_url, category, location, name))
+                print(f"已更新展覽: {name} - {category} - {date} - {time} - {location} - {link} - {image_url}")
             else:
                 print(f"無變更: {name}")
         else:
             # 新增資料
             cursor.execute("""
-                INSERT INTO huashan1914 (name, date, time, link, image, category) 
-                VALUES (%s, %s, %s, %s, %s, %s)
-            """, (name, date, time, link, image_url, category))
-            print(f"已新增展覽: {name} - {category} - {date} - {time} - {link} - {image_url}")
+                INSERT INTO exhibitions (name, date, time, link, image, category, location) 
+                VALUES (%s, %s, %s, %s, %s, %s, %s)
+            """, (name, date, time, link, image_url, category, location))
+            print(f"已新增展覽: {name} - {category} - {date} - {time} - {location} - {link} - {image_url}")
     
     # 提交變更
     conn.commit()
