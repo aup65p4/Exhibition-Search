@@ -27,8 +27,8 @@ db.connect((err) => {
 });
 
 // 建立 API 路由：取得所有展覽資料
-app.get('/api/huashan1914', (req, res) => {
-  db.query('SELECT * FROM huashan1914', (err, results) => {
+app.get('/api/exhibitions', (req, res) => {
+  db.query('SELECT * FROM exhibitions', (err, results) => {
     if (err) {
       res.status(500).send('資料庫查詢錯誤');
       return;
