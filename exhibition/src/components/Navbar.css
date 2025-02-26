@@ -1,0 +1,15 @@
+/* 固定Navbar */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1050; /* 保證Navbar在最上層 */
+    background-color: #343a40; /* 你可以根據需求自定義背景色 */
+  }
+  
+  /* 為了避免內容被Navbar遮擋，給頁面內容添加 padding-top */
+  body {
+    padding-top: 60px; /* 根據Navbar的高度設置 padding-top */
+  }
+  

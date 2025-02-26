@@ -1,0 +1,19 @@
+.carousel-img {
+    width: 100%;  /* 讓圖片撐滿 Carousel */
+    height: 500px; /* 固定高度 */
+    object-fit: cover; /* 確保圖片填滿但不變形 */
+  }
+  
+
+  .carousel-caption {
+    background: rgba(0, 0, 0, 0.6);
+    padding: 10px;
+    border-radius: 10px;
+  }
+  
+  .carousel-caption h3,
+  .carousel-caption p {
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.8);
+    color: #fff; /* 確保文字是白色 */
+  }
+  
